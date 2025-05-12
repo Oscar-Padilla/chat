@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import HomeScreen from './screens/HomeScreen';
+import ChatScreen from './screens/ChatScreen';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [pantalla, setPantalla] = useState('login');
+  const [usuarioActivo, setUsuarioActivo] = useState(null);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  if (pantalla === 'registro') {
+    return <RegisterScreen setPantalla={setPantalla} />;
+  }
+
+  if (pantalla === 'login') {
+    return <LoginScreen setPantalla={setPantalla} setUsuarioActivo={setUsuarioActivo} />;
+  }
+
+  if (pantalla === 'home') {
+    return <HomeScreen usuario={usuarioActivo} setPantalla={setPantalla} setUsuarioActivo={setUsuarioActivo} />;
+  }
+
+  if (pantalla === 'chat') {
+    return <ChatScreen usuario={usuarioActivo} setPantalla={setPantalla} />;
+  }
+}
