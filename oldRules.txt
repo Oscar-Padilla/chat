@@ -1,7 +1,24 @@
+rules_version = '1';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
       allow read, write: if false;
+    }
+  }
+}
+
+
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /usuarios/{usuario} {
+      allow read, write: if true;  // Para pruebas
+    }
+    match /chats/{chat} {
+      allow read, write: if true;  // Para pruebas
     }
   }
 }

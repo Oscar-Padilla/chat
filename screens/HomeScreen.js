@@ -2,13 +2,7 @@ import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { styles } from '../styles';
 
-export default function HomeScreen({ usuario, setPantalla, setUsuarioActivo }) {
-
-    function cerrarSesion() {
-        setUsuarioActivo(null);
-        setPantalla('login');
-    }
-
+export default function HomeScreen({ usuario, colorRol, setPantalla, cerrarSesion }) {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Bienvenido, {usuario}</Text>

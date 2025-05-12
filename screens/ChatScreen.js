@@ -4,34 +4,16 @@ import { db } from '../firebaseConfig';
 import { collection, addDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ChatScreen({ usuario, setPantalla }) {
+export default function ChatScreen({ usuario, colorRol, setPantalla }) {
     const [mensaje, setMensaje] = useState('');
     const [mensajes, setMensajes] = useState([]);
-    const [userColors, setUserColors] = useState({});
-
-    const colorsPalette = [
-        '#e6194b', '#3cb44b', '#4363d8', '#f58231',
-        '#911eb4', '#46f0f0', '#f032e6', '#bcf60c',
-        '#008080', '#e6beff', '#9a6324', '#808000',
-        '#800000', '#aaffc3', '#000075', '#808080'
-    ];
-
-    function getRandomColorFromPalette() {
-        return colorsPalette[Math.floor(Math.random() * colorsPalette.length)];
-    }
-
-    function ensureUserColor(username) {
-        setUserColors((prev) => {
-            if (prev[username]) return prev;
-            return { ...prev, [username]: getRandomColorFromPalette() };
-        });
-    }
 
     async function enviarMensaje() {
         if (!mensaje) return;
         await addDoc(collection(db, 'chats'), {
             mensaje,
             usuario,
+            colorRol,
             fecha: new Date()
         });
         setMensaje('');
@@ -41,8 +23,12 @@ export default function ChatScreen({ usuario, setPantalla }) {
         const q = query(collection(db, 'chats'), orderBy('fecha'));
         const unsub = onSnapshot(q, (snapshot) => {
             const msgs = snapshot.docs.map(doc => doc.data());
-            msgs.forEach(msg => ensureUserColor(msg.usuario));
-            setMensajes(msgs);
+            // Filtrar según el color del usuario
+            const filtered = msgs.filter(m =>
+                colorRol === 'azul' ||
+                (colorRol === 'amarillo' && m.colorRol === 'amarillo')
+            );
+            setMensajes(filtered);
         });
         return () => unsub();
     }, []);
@@ -51,10 +37,9 @@ export default function ChatScreen({ usuario, setPantalla }) {
         <KeyboardAvoidingView
             style={{ flex: 1 }}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+            keyboardVerticalOffset={80}
         >
-            <SafeAreaView style={{ flex: 1, marginTop: 50, marginBottom: 50 }}>
-                {/* Header con botón salir */}
+            <SafeAreaView style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingHorizontal: 10, paddingTop: 10 }}>
                     <TouchableOpacity onPress={() => setPantalla('home')}>
                         <Text style={{ fontSize: 16, color: 'blue' }}>{'<- Salir'}</Text>
@@ -62,21 +47,28 @@ export default function ChatScreen({ usuario, setPantalla }) {
                     <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 40 }}>Chat en tiempo real</Text>
                 </View>
 
-                {/* Lista de mensajes */}
                 <FlatList
                     style={{ flex: 1, paddingHorizontal: 10 }}
                     data={mensajes}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={{ paddingVertical: 5, borderBottomWidth: 1, borderBottomColor: '#eee' }}>
-                            <Text style={{ color: userColors[item.usuario] || '#000', fontSize: 16 }}>
-                                {item.usuario}: {item.mensaje}
+                            <Text style={{ fontSize: 16 }}>
+                                <Text style={{
+                                    color:
+                                        item.colorRol === 'azul' ? '#0000FF' :
+                                            item.colorRol === 'amarillo' ? '#FFD700' :
+                                                item.colorRol === 'rojo' ? '#FF0000' :
+                                                    '#000'  // Color por defecto si el campo está vacío o mal
+                                }}>
+                                    {`${item.usuario}:`}
+                                </Text>
+                                {` ${item.mensaje}`}
                             </Text>
                         </View>
                     )}
                 />
 
-                {/* Input + botón al fondo */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 5 }}>
                     <TextInput
                         style={{
