@@ -4,20 +4,20 @@ import { styles } from '../styles';
 
 export default function HomeScreen({ usuario, setPantalla, setUsuarioActivo }) {
 
-  function cerrarSesion() {
-    setUsuarioActivo(null);
-    setPantalla('login');
-  }
+    function cerrarSesion() {
+        setUsuarioActivo(null);
+        setPantalla('login');
+    }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bienvenido, {usuario}</Text>
-      <View style={styles.button}>
-        <Button title="Entrar al chat" onPress={() => setPantalla('chat')} />
-      </View>
-      <View style={styles.button}>
-        <Button title="Cerrar sesión" color="red" onPress={cerrarSesion} />
-      </View>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Bienvenido, {usuario}</Text>
+            <View style={styles.button}>
+                <Button title="Entrar al chat" onPress={() => setPantalla('chat')} />
+            </View>
+            <View style={styles.button}>
+                <Button title="Cerrar sesión" color="red" onPress={cerrarSesion} />
+            </View>
+        </View>
+    );
 }
