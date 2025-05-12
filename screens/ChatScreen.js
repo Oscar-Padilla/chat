@@ -53,7 +53,7 @@ export default function ChatScreen({ usuario, setPantalla }) {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         >
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, marginTop: 50, marginBottom: 50 }}>
                 {/* Header con botón salir */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10, paddingHorizontal: 10, paddingTop: 10 }}>
                     <TouchableOpacity onPress={() => setPantalla('home')}>
